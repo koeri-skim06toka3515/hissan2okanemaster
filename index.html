@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>お金でわかる！たし算とひき算のひっ算</title>
+  <style>
+    :root {
+      --bg: #f4f7f6;
+      --card-bg: #ffffff;
+      --primary: #2d8a4e;
+      --sub: #e67e22;
+      --danger: #d93829;
+      --text: #2c3e50;
+      --border: #dcdfe6;
+      --grid-line: #b3d4fc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: "BIZ UDPGothic", "UD デジタル 教科書体 N-R", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 12px;
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 12px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 12px;
+    }
+
+    .nav-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f0f3f4;
+      padding: 6px 12px;
+      border-radius: 12px;
+    }
+
+    .input-box {
+      width: 60px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      text-align: center;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 4px;
+      outline: none;
+      background: #fff;
+    }
+    .input-box:focus {
+      border-color: var(--primary);
+    }
+
+    select.mode-select {
+      font-size: 1.1rem;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 2px solid #ccc;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .btn-action {
+      background: #34495e;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.1s, background-color 0.2s;
+    }
+    .btn-action:hover {
+      background: #2c3e50;
+    }
+    .btn-action:active {
+      transform: scale(0.96);
+    }
+
+    .btn-sound {
+      background: #eef2f5;
+      color: #334155;
+      font-size: 0.95rem;
+      font-weight: bold;
+      border: 2px solid #cbd5e0;
+      padding: 7px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-sound.sound-off {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #b91c1c;
+    }
+
+    .presets {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      align-items: center;
+    }
+    .preset-label {
+      font-size: 0.85rem;
+      color: #7f8c8d;
+    }
+    .btn-preset {
+      background: #edf2f7;
+      border: 1px solid #cbd5e0;
+      padding: 4px 10px;
+      font-size: 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-preset:hover {
+      background: #e2e8f0;
+    }
+
+    .formula-banner {
+      margin-top: 10px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-top: 1px dashed #e2e8f0;
+      padding-top: 8px;
+    }
+    .formula-text {
+      font-size: 1.8rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+    .message-bubble {
+      font-size: 0.95rem;
+      background: #fff8e1;
+      border-left: 4px solid #ffb300;
+      padding: 8px 12px;
+      border-radius: 0 8px 8px 0;
+      color: #5d4037;
+      margin-top: 6px;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      line-height: 1.4;
+    }
+
+    .controls-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 640px) {
+      .controls-panel {
+        grid-template-columns: 1fr 1fr;
+      }
+      .controls-panel .btn-undo {
+        grid-column: span 2;
+      }
+    }
+    .tool-box {
+      border: 2px dashed #cbd5e0;
+      background: #ffffff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .tool-box.active-hint {
+      border-color: #ff9800;
+      background: #fffdf9;
+      box-shadow: 0 0 10px rgba(255, 152, 0, 0.25);
+    }
+    .tool-title {
+      font-size: 0.95rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tool-btns {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .btn-tool {
+      background: #edf2f7;
+      border: 1px solid #cbd5e0;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .btn-tool:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .btn-tool.recommend {
+      background: #ffe0b2;
+      border-color: #fb8c00;
+      color: #b73e00;
+      animation: pulse 1.4s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+    .btn-undo {
+      background: #eef2f5;
+      border: 1px solid #ccd6dd;
+      font-size: 0.9rem;
+      font-weight: bold;
+      border-radius: 12px;
+      padding: 8px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .stage-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 600px) {
+      .stage-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stage-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      border: 2px solid transparent;
+      display: flex;
+      flex-direction: column;
+    }
+    .stage-card.left-side {
+      border-color: #a5d6a7;
+    }
+    .stage-card.right-side {
+      border-color: #ffcc80;
+    }
+
+    .stage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #edf2f7;
+      margin-bottom: 8px;
+    }
+    .stage-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stage-title .tag {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #fff;
+    }
+    .left-side .tag { background: var(--primary); }
+    .right-side .tag { background: var(--sub); }
+
+    .stage-amount {
+      font-size: 1.25rem;
+      font-weight: 900;
+    }
+    .stage-hint {
+      font-size: 0.8rem;
+      color: #718096;
+      margin-bottom: 8px;
+    }
+
+    .coin-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      min-height: 230px;
+      flex-grow: 1;
+    }
+    .coin-col {
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 6px 4px;
+      border: 1px dashed #cbd5e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      transition: background-color 0.2s, border-color 0.2s, opacity 0.2s;
+    }
+
+    .coin-col.locked-column {
+      background: #f1f3f5;
+      border-color: #d1d5db;
+      opacity: 0.55;
+    }
+    .coin-col.active-column {
+      border-color: var(--primary);
+      background: #fafffb;
+    }
+    .lock-badge {
+      font-size: 0.65rem;
+      background: #e2e8f0;
+      color: #64748b;
+      padding: 1px 4px;
+      border-radius: 4px;
+      margin-top: 2px;
+      display: inline-block;
+    }
+    .active-badge {
+      font-size: 0.65rem;
+      background: #c8e6c9;
+      color: #2e7d32;
+      font-weight: bold;
+      padding: 1px 4px;
+      border-radius: 4px;
+      margin-top: 2px;
+      display: inline-block;
+    }
+
+    .coin-col-head {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #4a5568;
+      margin-bottom: 4px;
+      text-align: center;
+    }
+    .coin-slot {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 4px;
+      align-items: center;
+      width: 100%;
+      min-height: 190px;
+    }
+
+    .coin {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 3px 5px rgba(0,0,0,0.18), inset 0 2px 3px rgba(255,255,255,0.7);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .coin:hover {
+      transform: translateY(-2px) scale(1.06);
+    }
+    .coin:active {
+      transform: scale(0.92);
+    }
+    .coin.disabled-coin {
+      cursor: not-allowed;
+      filter: grayscale(0.5);
+    }
+    .coin.disabled-coin:hover {
+      transform: none;
+    }
+
+    .coin-100 {
+      background: radial-gradient(circle at 35% 30%, #ffffff, #cfd8dc 70%, #90a4ae 100%);
+      border: 2px solid #78909c;
+      color: #263238;
+    }
+    .coin-10 {
+      background: radial-gradient(circle at 35% 30%, #ffd0a0, #d98236 75%, #a05315 100%);
+      border: 2px solid #8d4814;
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    .coin-1 {
+      background: radial-gradient(circle at 35% 30%, #ffffff, #e2e8f0 75%, #cbd5e1 100%);
+      border: 2px solid #94a3b8;
+      color: #334155;
+    }
+
+    .bottom-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 640px) {
+      .bottom-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .log-card, .notebook-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 12px 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    }
+
+    .box-title {
+      font-size: 1rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 4px;
+    }
+
+    .log-list {
+      max-height: 180px;
+      overflow-y: auto;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 0.85rem;
+    }
+    .log-item {
+      background: #f8fafc;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border-left: 3px solid #64748b;
+      color: #334155;
+      line-height: 1.4;
+    }
+    .log-item.in-progress {
+      background: #fff8e1;
+      border-left-color: #f59e0b;
+      color: #92400e;
+      font-weight: 600;
+    }
+
+    .hissan-board-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 0;
+    }
+    .math-notebook {
+      background-color: #fafdff;
+      background-image: 
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 38px 38px;
+      border: 2px solid #82b1ff;
+      border-radius: 8px;
+      padding: 6px;
+      box-shadow: 2px 3px 6px rgba(0,0,0,0.06);
+    }
+
+    .hissan-grid {
+      display: grid;
+      grid-template-columns: 36px 36px 36px 36px;
+      grid-template-rows: 24px 24px 38px 38px 8px 40px;
+      align-items: center;
+      justify-items: center;
+      font-family: "UD デジタル 教科書体 N-R", "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", sans-serif;
+    }
+
+    .h-cell {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .main-num {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .op-sign {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .calc-line {
+      grid-column: 1 / span 4;
+      width: 95%;
+      height: 3px;
+      background-color: #1e293b;
+      border-radius: 2px;
+    }
+
+    .memo-carried {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--danger);
+      background: #ffebee;
+      border-radius: 4px;
+      padding: 0 3px;
+    }
+
+    .cancelled-num {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #94a3b8;
+      position: relative;
+    }
+    .cancelled-num::after {
+      content: "";
+      position: absolute;
+      width: 130%;
+      height: 2.5px;
+      background: var(--danger);
+      top: 50%;
+      left: -15%;
+      transform: rotate(-35deg);
+      border-radius: 2px;
+    }
+
+    .rem-num {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--danger);
+    }
+    .borrowed-10 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--danger);
+      background: #ffebee;
+      border-radius: 4px;
+      padding: 0 2px;
+    }
+
+    .ans-box {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      animation: popAns 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .ans-box.empty {
+      border: 1.5px dashed #cbd5e1;
+      border-radius: 6px;
+      width: 32px;
+      height: 32px;
+    }
+    @keyframes popAns {
+      from { transform: scale(0.6); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .hissan-footer-guide {
+      font-size: 0.8rem;
+      color: #64748b;
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-card {
+      background: #fff;
+      padding: 24px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      max-width: 320px;
+      width: 90%;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-card h2 {
+      font-size: 1.6rem;
+      color: #2e7d32;
+      margin-bottom: 8px;
+    }
+    .modal-card p {
+      font-size: 1.05rem;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .modal-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-bar">
+      <div class="input-group">
+        <label>はじめ</label>
+        <input type="number" id="numA" class="input-box" value="102" min="1" max="999">
+      </div>
+      <div class="input-group">
+        <label>けいさん</label>
+        <select id="calcMode" class="mode-select">
+          <option value="sub" selected>− ひき算</option>
+          <option value="add">＋ たし算</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label id="numBLabel">ひく数</label>
+        <input type="number" id="numB" class="input-box" value="45" min="1" max="999">
+      </div>
+      <button id="btnSet" class="btn-action">お金をならべる</button>
+      <button id="btnSoundToggle" class="btn-sound">🔊 おと: ON</button>
+    </div>
+
+    <div class="presets">
+      <span class="preset-label">教科書のれい:</span>
+      <button class="btn-preset" onclick="setPreset(102, 'sub', 45)">102 − 45（十の位が0のくり下がり）</button>
+      <button class="btn-preset" onclick="setPreset(143, 'sub', 68)">143 − 68（2回のくり下がり）</button>
+      <button class="btn-preset" onclick="setPreset(54, 'sub', 27)">54 − 27（2けたのくり下がり）</button>
+      <button class="btn-preset" onclick="setPreset(154, 'add', 52)">154 ＋ 52（くり上がり）</button>
+      <button class="btn-preset" onclick="setPreset(86, 'add', 47)">86 ＋ 47（2回のくり上がり）</button>
+    </div>
+
+    <div class="formula-banner">
+      <div class="formula-text" id="formulaDisplay">102 − 45 ＝ ？</div>
+    </div>
+    <div class="message-bubble" id="guideMessage">
+      まずは一の位からけいさんしよう！
+    </div>
+  </header>
+
+  <section class="controls-panel">
+    <div class="tool-box" id="boxBreak">
+      <div class="tool-title">📦 お金をくずす（くり下がり）</div>
+      <div class="tool-btns">
+        <button id="btnBreak100" class="btn-tool">100円 → 10円 10こ</button>
+        <button id="btnBreak10" class="btn-tool">10円 → 1円 10こ</button>
+      </div>
+    </div>
+
+    <div class="tool-box" id="boxBundle">
+      <div class="tool-title">🎁 10こをまとめる（くり上がり）</div>
+      <div class="tool-btns">
+        <button id="btnBundle1" class="btn-tool">1円 10こ → 10円</button>
+        <button id="btnBundle10" class="btn-tool">10円 10こ → 100円</button>
+      </div>
+    </div>
+
+    <button id="btnUndo" class="btn-undo">↩ ひとつもどす</button>
+  </section>
+
+  <main class="stage-container">
+    <div class="stage-card left-side">
+      <div class="stage-header">
+        <div class="stage-title">
+          <span class="tag">左</span>
+          <span>じぶんのお金</span>
+        </div>
+        <div class="stage-amount" id="leftTotal">102 円</div>
+      </div>
+      <div class="stage-hint" id="leftHint">お金をタップして右へはらおう</div>
+
+      <div class="coin-columns">
+        <div class="coin-col" id="colLeft100">
+          <div class="coin-col-head">100円玉 × <span id="cntLeft100">1</span></div>
+          <div id="badgeLeft100"></div>
+          <div class="coin-slot" id="slotLeft100"></div>
+        </div>
+        <div class="coin-col" id="colLeft10">
+          <div class="coin-col-head">10円玉 × <span id="cntLeft10">0</span></div>
+          <div id="badgeLeft10"></div>
+          <div class="coin-slot" id="slotLeft10"></div>
+        </div>
+        <div class="coin-col" id="colLeft1">
+          <div class="coin-col-head">1円玉 × <span id="cntLeft1">2</span></div>
+          <div id="badgeLeft1"></div>
+          <div class="coin-slot" id="slotLeft1"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage-card right-side">
+      <div class="stage-header">
+        <div class="stage-title">
+          <span class="tag">右</span>
+          <span id="rightStageTitle">引いたお金（はらったお金）</span>
+        </div>
+        <div class="stage-amount" id="rightTotal">0 円</div>
+      </div>
+      <div class="stage-hint" id="rightHint">ひく目標: 45円</div>
+
+      <div class="coin-columns">
+        <div class="coin-col" id="colRight100">
+          <div class="coin-col-head">100円玉 × <span id="cntRight100">0</span></div>
+          <div id="badgeRight100"></div>
+          <div class="coin-slot" id="slotRight100"></div>
+        </div>
+        <div class="coin-col" id="colRight10">
+          <div class="coin-col-head">10円玉 × <span id="cntRight10">0</span></div>
+          <div id="badgeRight10"></div>
+          <div class="coin-slot" id="slotRight10"></div>
+        </div>
+        <div class="coin-col" id="colRight1">
+          <div class="coin-col-head">1円玉 × <span id="cntRight1">0</span></div>
+          <div id="badgeRight1"></div>
+          <div class="coin-slot" id="slotRight1"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bottom-container">
+    <div class="log-card">
+      <div class="box-title">
+        <span>📋 やったこと（けいさんのあゆみ）</span>
+        <span id="logCount" style="font-size:0.85rem; color:#718096;">0かい</span>
+      </div>
+      <ul class="log-list" id="logList">
+        <li class="log-item">お金をならべました。</li>
+      </ul>
+    </div>
+
+    <div class="notebook-card">
+      <div class="box-title">
+        <span>📝 ひっ算ノート</span>
+        <span style="font-size:0.8rem; color:#3182ce;">位（くらい）をそろえて計算</span>
+      </div>
+      <div class="hissan-board-wrapper">
+        <div class="math-notebook">
+          <div class="hissan-grid" id="hissanGrid">
+          </div>
+        </div>
+      </div>
+      <div class="hissan-footer-guide">一の位 → 十の位 → 百の位 の じゅんじょで計算しよう！</div>
+    </div>
+  </footer>
+
+  <div class="modal-overlay" id="finishModal">
+    <div class="modal-card">
+      <h2>🎉 せいかい！</h2>
+      <p id="modalAnswerText">こたえは 57 です！</p>
+      <button class="modal-btn" onclick="closeModal()">もういちど</button>
+    </div>
+  </div>
+
+  <script>
+    let isSoundOn = true;
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let actx = null;
+
+    function playBeep(type) {
+      if (!isSoundOn) return;
+      try {
+        if (!actx) actx = new AudioCtx();
+        if (actx.state === 'suspended') actx.resume();
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.connect(gain);
+        gain.connect(actx.destination);
+
+        const now = actx.currentTime;
+        if (type === 'coin') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1400, now);
+          osc.frequency.exponentialRampToValueAtTime(1900, now + 0.08);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          osc.start(now);
+          osc.stop(now + 0.12);
+        } else if (type === 'break') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(520, now);
+          osc.frequency.exponentialRampToValueAtTime(320, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.start(now);
+          osc.stop(now + 0.18);
+        } else if (type === 'bundle') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.08);
+          osc.frequency.setValueAtTime(783.99, now + 0.16);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === 'warn') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(180, now + 0.1);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.start(now);
+          osc.stop(now + 0.22);
+        } else if (type === 'fanfare') {
+          const notes = [523.25, 659.25, 783.99, 1046.50];
+          notes.forEach((freq, idx) => {
+            const o = actx.createOscillator();
+            const g = actx.createGain();
+            o.connect(g);
+            g.connect(actx.destination);
+            o.type = 'triangle';
+            o.frequency.setValueAtTime(freq, now + idx * 0.1);
+            g.gain.setValueAtTime(0.25, now + idx * 0.1);
+            g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.28);
+            o.start(now + idx * 0.1);
+            o.stop(now + idx * 0.1 + 0.3);
+          });
+        }
+      } catch (e) {}
+    }
+
+    let state = {
+      mode: 'sub',
+      numA: 102,
+      numB: 45,
+      left: { 100: 1, 10: 0, 1: 2 },
+      right: { 100: 0, 10: 0, 1: 0 },
+      hissanState: {
+        borrowedHundred: false,
+        borrowedTen: false,
+        carryToTen: false,
+        carryToHundred: false
+      },
+      confirmedSteps: {
+        sub1: false,
+        sub10: false,
+        sub100: false,
+        add1: false,
+        add10: false,
+        add100: false
+      },
+      history: [],
+      logs: []
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initEventListeners();
+      setupProblem(102, 'sub', 45);
+    });
+
+    function setPreset(a, mode, b) {
+      document.getElementById('numA').value = a;
+      document.getElementById('calcMode').value = mode;
+      document.getElementById('numB').value = b;
+      setupProblem(a, mode, b);
+    }
+
+    function setupProblem(a, mode, b) {
+      state.mode = mode;
+      state.numA = parseInt(a, 10) || 0;
+      state.numB = parseInt(b, 10) || 0;
+
+      if (mode === 'sub') {
+        state.left = splitToCoins(state.numA);
+        state.right = { 100: 0, 10: 0, 1: 0 };
+      } else {
+        state.left = splitToCoins(state.numA);
+        state.right = splitToCoins(state.numB);
+      }
+
+      state.hissanState = {
+        borrowedHundred: false,
+        borrowedTen: false,
+        carryToTen: false,
+        carryToHundred: false
+      };
+
+      state.confirmedSteps = {
+        sub1: false,
+        sub10: false,
+        sub100: false,
+        add1: false,
+        add10: false,
+        add100: false
+      };
+
+      state.history = [];
+      state.logs = [`${state.numA} ${mode === 'sub' ? '−' : '＋'} ${state.numB} の お金をならべました。`];
+
+      renderAll();
+    }
+
+    function splitToCoins(val) {
+      const h = Math.floor(val / 100);
+      const t = Math.floor((val % 100) / 10);
+      const o = val % 10;
+      return { 100: h, 10: t, 1: o };
+    }
+
+    function saveState(actionName) {
+      state.history.push({
+        left: { ...state.left },
+        right: { ...state.right },
+        hissanState: { ...state.hissanState },
+        confirmedSteps: { ...state.confirmedSteps },
+        logs: [...state.logs]
+      });
+      if (actionName) {
+        state.logs.push(actionName);
+      }
+    }
+
+    function undo() {
+      if (state.history.length === 0) return;
+      const prev = state.history.pop();
+      state.left = prev.left;
+      state.right = prev.right;
+      state.hissanState = prev.hissanState;
+      state.confirmedSteps = prev.confirmedSteps;
+      state.logs = prev.logs;
+      playBeep('coin');
+      renderAll();
+    }
+
+    function getCurrentStep() {
+      const isSub = state.mode === 'sub';
+      const targetCoins = splitToCoins(state.numB);
+
+      if (isSub) {
+        if (state.right[1] < targetCoins[1]) return 1;
+        if (state.right[10] < targetCoins[10]) return 10;
+        if (state.right[100] < targetCoins[100]) return 100;
+        return 'done';
+      } else {
+        if (state.right[1] > 0 || state.left[1] >= 10) return 1;
+        if (state.right[10] > 0 || state.left[10] >= 10) return 10;
+        if (state.right[100] > 0) return 100;
+        return 'done';
+      }
+    }
+
+    function handleCoinClick(denom, fromSide) {
+      const step = getCurrentStep();
+
+      if (state.mode === 'sub') {
+        if (fromSide === 'left') {
+          if (step === 1 && denom > 1) {
+            playBeep('warn');
+            const need1 = (state.numB % 10) - state.right[1];
+            alert(`⚠️ ひっ算では【一の位】から順番にひきます！\n先に1円玉をあと ${need1}こ はらってください。\n（1円玉が足りないときは上の『お金をくずす』を押してね！）`);
+            return;
+          }
+
+          if (step === 10 && denom === 100) {
+            playBeep('warn');
+            const need10 = Math.floor((state.numB % 100) / 10) - state.right[10];
+            alert(`⚠️ 一の位のつぎは【十の位】をひきます！\n先に10円玉をあと ${need10}こ はらってください。\n（10円玉が足りないときは『100円 → 10円 10こ』にくずしてね！）`);
+            return;
+          }
+
+          const targetCoins = splitToCoins(state.numB);
+          if (state.right[denom] >= targetCoins[denom]) {
+            playBeep('warn');
+            alert(`この位の引く数（${targetCoins[denom]}枚）はもうはらいました！`);
+            return;
+          }
+
+          if (state.left[denom] > 0) {
+            saveState(null);
+            state.left[denom]--;
+            state.right[denom]++;
+            playBeep('coin');
+
+            if (denom === 1 && state.right[1] === targetCoins[1] && !state.confirmedSteps.sub1) {
+              state.confirmedSteps.sub1 = true;
+              state.logs.push(`【一の位】${targetCoins[1]}円 を 引いた（はらった）よ。`);
+            } else if (denom === 10 && state.right[10] === targetCoins[10] && !state.confirmedSteps.sub10) {
+              state.confirmedSteps.sub10 = true;
+              state.logs.push(`【十の位】${targetCoins[10] * 10}円 を 引いた（はらった）よ。`);
+            } else if (denom === 100 && state.right[100] === targetCoins[100] && !state.confirmedSteps.sub100) {
+              state.confirmedSteps.sub100 = true;
+              state.logs.push(`【百の位】${targetCoins[100] * 100}円 を 引いた（はらった）よ。`);
+            }
+
+            checkGoal();
+            renderAll();
+          }
+        }
+      } else {
+        if (fromSide === 'right') {
+          if (step === 1 && denom > 1) {
+            playBeep('warn');
+            alert(`⚠️ たし算も【一の位】から順番に足します！\n先に右の1円玉をすべて左へうつしてください。`);
+            return;
+          }
+          if (step === 10 && denom === 100) {
+            playBeep('warn');
+            alert(`⚠️ 一の位のつぎは【十の位】を足します！\n先に右の10円玉をすべて左へうつしてください。`);
+            return;
+          }
+
+          if (state.right[denom] > 0) {
+            saveState(null);
+            state.right[denom]--;
+            state.left[denom]++;
+            playBeep('coin');
+
+            const targetCoins = splitToCoins(state.numB);
+            if (denom === 1 && state.right[1] === 0 && !state.confirmedSteps.add1 && state.left[1] < 10) {
+              state.confirmedSteps.add1 = true;
+              state.logs.push(`【一の位】${targetCoins[1]}円 を 足したよ。`);
+            } else if (denom === 10 && state.right[10] === 0 && !state.confirmedSteps.add10 && state.left[10] < 10) {
+              state.confirmedSteps.add10 = true;
+              state.logs.push(`【十の位】${targetCoins[10] * 10}円 を 足したよ。`);
+            } else if (denom === 100 && state.right[100] === 0 && !state.confirmedSteps.add100) {
+              state.confirmedSteps.add100 = true;
+              state.logs.push(`【百の位】${targetCoins[100] * 100}円 を 足したよ。`);
+            }
+
+            checkGoal();
+            renderAll();
+          }
+        }
+      }
+    }
+
+    function breakMoney(fromDenom) {
+      if (fromDenom === 100 && state.left[100] > 0) {
+        saveState(`100円玉を 10円玉10こに くずしたよ。`);
+        state.left[100]--;
+        state.left[10] += 10;
+        state.hissanState.borrowedHundred = true;
+        playBeep('break');
+        renderAll();
+      } else if (fromDenom === 10 && state.left[10] > 0) {
+        saveState(`10円玉を 1円玉10こに くずしたよ。`);
+        state.left[10]--;
+        state.left[1] += 10;
+        state.hissanState.borrowedTen = true;
+        playBeep('break');
+        renderAll();
+      }
+    }
+
+    function bundleMoney(fromDenom) {
+      if (fromDenom === 1 && state.left[1] >= 10) {
+        saveState(`1円玉10こを 10円玉1こに まとめたよ！`);
+        state.left[1] -= 10;
+        state.left[10]++;
+        state.hissanState.carryToTen = true;
+
+        const targetCoins = splitToCoins(state.numB);
+        if (state.right[1] === 0 && !state.confirmedSteps.add1) {
+          state.confirmedSteps.add1 = true;
+          state.logs.push(`【一の位】${targetCoins[1]}円 を 足して くり上げたよ。`);
+        }
+
+        playBeep('bundle');
+        renderAll();
+      } else if (fromDenom === 10 && state.left[10] >= 10) {
+        saveState(`10円玉10こを 100円玉1こに まとめたよ！`);
+        state.left[10] -= 10;
+        state.left[100]++;
+        state.hissanState.carryToHundred = true;
+
+        const targetCoins = splitToCoins(state.numB);
+        if (state.right[10] === 0 && !state.confirmedSteps.add10) {
+          state.confirmedSteps.add10 = true;
+          state.logs.push(`【十の位】${targetCoins[10] * 10}円 を 足して くり上げたよ。`);
+        }
+
+        playBeep('bundle');
+        renderAll();
+      }
+    }
+
+    function checkGoal() {
+      if (state.mode === 'sub') {
+        const rightSum = getRightSum();
+        if (rightSum === state.numB) {
+          const ans = state.numA - state.numB;
+          setTimeout(() => {
+            playBeep('fanfare');
+            document.getElementById('modalAnswerText').innerText = `ひいたお金が ${state.numB}円 になりました！\n残りの こたえは ${ans}円 です！`;
+            document.getElementById('finishModal').style.display = 'flex';
+          }, 300);
+        }
+      } else {
+        const rightSum = getRightSum();
+        if (rightSum === 0 && state.left[1] < 10 && state.left[10] < 10) {
+          const ans = state.numA + state.numB;
+          setTimeout(() => {
+            playBeep('fanfare');
+            document.getElementById('modalAnswerText').innerText = `ぜんぶ 足し算できました！\nこたえは ${ans}円 です！`;
+            document.getElementById('finishModal').style.display = 'flex';
+          }, 300);
+        }
+      }
+    }
+
+    function getLeftSum() {
+      return state.left[100] * 100 + state.left[10] * 10 + state.left[1];
+    }
+    function getRightSum() {
+      return state.right[100] * 100 + state.right[10] * 10 + state.right[1];
+    }
+
+    function renderAll() {
+      const isSub = state.mode === 'sub';
+      const leftSum = getLeftSum();
+      const rightSum = getRightSum();
+      const currentStep = getCurrentStep();
+
+      document.getElementById('formulaDisplay').innerText = 
+        `${state.numA} ${isSub ? '−' : '＋'} ${state.numB} ＝ ？`;
+      document.getElementById('numBLabel').innerText = isSub ? 'ひく数' : 'たす数';
+
+      document.getElementById('rightStageTitle').innerText = 
+        isSub ? '引いたお金（はらったお金）' : 'これから足すお金';
+      document.getElementById('leftTotal').innerText = `${leftSum} 円`;
+      document.getElementById('rightTotal').innerText = `${rightSum} 円`;
+
+      if (isSub) {
+        document.getElementById('leftHint').innerText = 'お金をタップして右へはらおう';
+        document.getElementById('rightHint').innerText = `ひく目標: ${state.numB}円 (あと ${Math.max(0, state.numB - rightSum)}円)`;
+      } else {
+        document.getElementById('leftHint').innerText = '右からお金が集まるよ';
+        document.getElementById('rightHint').innerText = `あと ${rightSum}円 を左へ運ぼう`;
+      }
+
+      document.getElementById('cntLeft100').innerText = state.left[100];
+      document.getElementById('cntLeft10').innerText = state.left[10];
+      document.getElementById('cntLeft1').innerText = state.left[1];
+
+      document.getElementById('cntRight100').innerText = state.right[100];
+      document.getElementById('cntRight10').innerText = state.right[10];
+      document.getElementById('cntRight1').innerText = state.right[1];
+
+      updateColumnLockStatus(currentStep);
+
+      renderCoinSlots('slotLeft', state.left, 'left', currentStep);
+      renderCoinSlots('slotRight', state.right, 'right', currentStep);
+
+      const btnBreak100 = document.getElementById('btnBreak100');
+      const btnBreak10 = document.getElementById('btnBreak10');
+      const btnBundle1 = document.getElementById('btnBundle1');
+      const btnBundle10 = document.getElementById('btnBundle10');
+
+      btnBreak100.disabled = state.left[100] <= 0;
+      btnBreak10.disabled = state.left[10] <= 0;
+      btnBundle1.disabled = state.left[1] < 10;
+      btnBundle10.disabled = state.left[10] < 10;
+
+      updateGuideMessage(currentStep);
+      renderLogs();
+      renderHissanNote();
+    }
+
+    function updateColumnLockStatus(step) {
+      const isSub = state.mode === 'sub';
+      const colPrefix = isSub ? 'colLeft' : 'colRight';
+      const badgePrefix = isSub ? 'badgeLeft' : 'badgeRight';
+
+      [100, 10, 1].forEach(d => {
+        const col = document.getElementById(`${colPrefix}${d}`);
+        const badge = document.getElementById(`${badgePrefix}${d}`);
+        col.className = 'coin-col';
+
+        if (step === d) {
+          col.classList.add('active-column');
+          badge.innerHTML = '<span class="active-badge">いま計算する位</span>';
+        } else if ((step === 10 && d === 1) || (step === 100 && (d === 1 || d === 10)) || step === 'done') {
+          col.classList.remove('locked-column');
+          badge.innerHTML = '<span class="lock-badge">✓ 計算完了</span>';
+        } else {
+          col.classList.add('locked-column');
+          badge.innerHTML = '<span class="lock-badge">🔒 順番待ち</span>';
+        }
+      });
+
+      const otherBadgePrefix = isSub ? 'badgeRight' : 'badgeLeft';
+      [100, 10, 1].forEach(d => {
+        const otherBadge = document.getElementById(`${otherBadgePrefix}${d}`);
+        otherBadge.innerHTML = '';
+        const otherCol = document.getElementById(`${isSub ? 'colRight' : 'colLeft'}${d}`);
+        otherCol.className = 'coin-col';
+      });
+    }
+
+    function renderCoinSlots(prefix, data, side, currentStep) {
+      [100, 10, 1].forEach(denom => {
+        const slot = document.getElementById(`${prefix}${denom}`);
+        slot.innerHTML = '';
+        const count = data[denom];
+
+        let isLockedCoin = false;
+        if (state.mode === 'sub' && side === 'left') {
+          if (currentStep === 1 && denom > 1) isLockedCoin = true;
+          if (currentStep === 10 && denom === 100) isLockedCoin = true;
+        } else if (state.mode === 'add' && side === 'right') {
+          if (currentStep === 1 && denom > 1) isLockedCoin = true;
+          if (currentStep === 10 && denom === 100) isLockedCoin = true;
+        }
+
+        for (let i = 0; i < count; i++) {
+          const coin = document.createElement('div');
+          coin.className = `coin coin-${denom} ${isLockedCoin ? 'disabled-coin' : ''}`;
+          coin.innerText = `${denom}円`;
+          coin.title = `${denom}円玉`;
+          coin.addEventListener('click', () => handleCoinClick(denom, side));
+          slot.appendChild(coin);
+        }
+      });
+    }
+
+    function updateGuideMessage(step) {
+      const msgBox = document.getElementById('guideMessage');
+      const boxBreak = document.getElementById('boxBreak');
+      const boxBundle = document.getElementById('boxBundle');
+      const btnBreak100 = document.getElementById('btnBreak100');
+      const btnBreak10 = document.getElementById('btnBreak10');
+      const btnBundle1 = document.getElementById('btnBundle1');
+      const btnBundle10 = document.getElementById('btnBundle10');
+
+      btnBreak100.classList.remove('recommend');
+      btnBreak10.classList.remove('recommend');
+      btnBundle1.classList.remove('recommend');
+      btnBundle10.classList.remove('recommend');
+      boxBreak.classList.remove('active-hint');
+      boxBundle.classList.remove('active-hint');
+
+      const isSub = state.mode === 'sub';
+
+      if (isSub) {
+        const rightSum = getRightSum();
+        const remainToPay = state.numB - rightSum;
+        if (remainToPay <= 0) {
+          msgBox.innerText = `ぴったり引けました！のこりは ${getLeftSum()} 円です！`;
+          return;
+        }
+
+        const b1 = state.numB % 10;
+        const b10 = Math.floor((state.numB % 100) / 10);
+        const r1 = state.right[1];
+        const r10 = state.right[10];
+
+        if (step === 1) {
+          const need1 = b1 - r1;
+          if (state.left[1] < need1) {
+            if (state.left[10] > 0) {
+              msgBox.innerText = `💡 一の位の1円玉が足りません。「10円 → 1円10こ」にくずそう！`;
+              btnBreak10.classList.add('recommend');
+              boxBreak.classList.add('active-hint');
+            } else if (state.left[100] > 0) {
+              msgBox.innerText = `💡 10円玉もありません。まず「100円 → 10円10こ」にくずそう！`;
+              btnBreak100.classList.add('recommend');
+              boxBreak.classList.add('active-hint');
+            }
+          } else {
+            msgBox.innerText = `【一の位の計算】左の1円玉をタップして、あと ${need1}まい（${need1}円）右へはらおう！`;
+          }
+          return;
+        }
+
+        if (step === 10) {
+          const need10 = b10 - r10;
+          if (state.left[10] < need10 && state.left[100] > 0) {
+            msgBox.innerText = `💡 十の位の10円玉が足りません。「100円 → 10円10こ」にくずそう！`;
+            btnBreak100.classList.add('recommend');
+            boxBreak.classList.add('active-hint');
+          } else {
+            msgBox.innerText = `【十の位の計算】左の10円玉をタップして、あと ${need10}まい（${need10 * 10}円）右へはらおう！`;
+          }
+          return;
+        }
+
+        if (step === 100) {
+          const b100 = Math.floor(state.numB / 100);
+          const need100 = b100 - state.right[100];
+          msgBox.innerText = `【百の位の計算】左の100円玉をタップして、あと ${need100}まい（${need100 * 100}円）右へはらおう！`;
+          return;
+        }
+
+      } else {
+        if (state.left[1] >= 10) {
+          msgBox.innerText = `💡 1円玉が10こ集まったよ！「1円 10こ → 10円」にまとめよう！`;
+          btnBundle1.classList.add('recommend');
+          boxBundle.classList.add('active-hint');
+          return;
+        }
+        if (state.left[10] >= 10) {
+          msgBox.innerText = `💡 10円玉が10こ集まったよ！「10円 10こ → 100円」にまとめよう！`;
+          btnBundle10.classList.add('recommend');
+          boxBundle.classList.add('active-hint');
+          return;
+        }
+        const rightSum = getRightSum();
+        if (rightSum > 0) {
+          if (step === 1) {
+            msgBox.innerText = `【一の位の計算】右の1円玉をタップして左へうつそう！`;
+          } else if (step === 10) {
+            msgBox.innerText = `【十の位の計算】右の10円玉をタップして左へうつそう！`;
+          } else {
+            msgBox.innerText = `【百の位の計算】右の100円玉をタップして左へうつそう！`;
+          }
+        } else {
+          msgBox.innerText = `ぜんぶ足せました！答えは ${getLeftSum()} 円です！`;
+        }
+      }
+    }
+
+    function renderLogs() {
+      const list = document.getElementById('logList');
+      list.innerHTML = '';
+      state.logs.forEach((txt, idx) => {
+        const li = document.createElement('li');
+        li.className = 'log-item';
+        li.innerText = `${idx + 1}. ${txt}`;
+        list.appendChild(li);
+      });
+
+      const isSub = state.mode === 'sub';
+      const targetCoins = splitToCoins(state.numB);
+
+      if (isSub) {
+        if (state.right[1] > 0 && state.right[1] < targetCoins[1]) {
+          const li = document.createElement('li');
+          li.className = 'log-item in-progress';
+          li.innerText = `▶ 【一の位】${state.right[1]}円 はらったよ（あと ${targetCoins[1] - state.right[1]}円）`;
+          list.appendChild(li);
+        } else if (state.right[10] > 0 && state.right[10] < targetCoins[10]) {
+          const li = document.createElement('li');
+          li.className = 'log-item in-progress';
+          li.innerText = `▶ 【十の位】${state.right[10] * 10}円 はらったよ（あと ${(targetCoins[10] - state.right[10]) * 10}円）`;
+          list.appendChild(li);
+        } else if (state.right[100] > 0 && state.right[100] < targetCoins[100]) {
+          const li = document.createElement('li');
+          li.className = 'log-item in-progress';
+          li.innerText = `▶ 【百の位】${state.right[100] * 100}円 はらったよ（あと ${(targetCoins[100] - state.right[100]) * 100}円）`;
+          list.appendChild(li);
+        }
+      } else {
+        const moved1 = targetCoins[1] - state.right[1];
+        const moved10 = targetCoins[10] - state.right[10];
+        const moved100 = targetCoins[100] - state.right[100];
+
+        if (state.right[1] > 0 && moved1 > 0) {
+          const li = document.createElement('li');
+          li.className = 'log-item in-progress';
+          li.innerText = `▶ 【一の位】${moved1}円 たしたよ（あと ${state.right[1]}円）`;
+          list.appendChild(li);
+        } else if (state.right[10] > 0 && moved10 > 0) {
+          const li = document.createElement('li');
+          li.className = 'log-item in-progress';
+          li.innerText = `▶ 【十の位】${moved10 * 10}円 たしたよ（あと ${state.right[10] * 10}円）`;
+          list.appendChild(li);
+        } else if (state.right[100] > 0 && moved100 > 0) {
+          const li = document.createElement('li');
+          li.className = 'log-item in-progress';
+          li.innerText = `▶ 【百の位】${moved100 * 100}円 たしたよ（あと ${state.right[100] * 100}円）`;
+          list.appendChild(li);
+        }
+      }
+
+      document.getElementById('logCount').innerText = `${state.logs.length}かい`;
+      list.scrollTop = list.scrollHeight;
+    }
+
+    function renderHissanNote() {
+      const grid = document.getElementById('hissanGrid');
+      grid.innerHTML = '';
+
+      const isSub = state.mode === 'sub';
+      const a = state.numA;
+      const b = state.numB;
+      const targetCoins = splitToCoins(b);
+
+      const a_h = Math.floor(a / 100) || '';
+      const a_t = Math.floor((a % 100) / 10);
+      const a_o = a % 10;
+
+      const b_h = Math.floor(b / 100) || '';
+      const b_t = Math.floor((b % 100) / 10);
+      const b_o = b % 10;
+
+      function createCell(col, row, content) {
+        const cell = document.createElement('div');
+        cell.className = 'h-cell';
+        cell.style.gridColumn = col;
+        cell.style.gridRow = row;
+        cell.innerHTML = content;
+        grid.appendChild(cell);
+      }
+
+      if (isSub) {
+        const { borrowedHundred, borrowedTen } = state.hissanState;
+
+        // 百の位
+        if (borrowedHundred && a_h !== '') {
+          createCell(2, 3, `<span class="cancelled-num">${a_h}</span>`);
+          const remH = Math.max(0, parseInt(a_h, 10) - 1);
+          createCell(2, 1, `<span class="rem-num">${remH}</span>`);
+        } else {
+          createCell(2, 3, `<span class="main-num">${a_h}</span>`);
+        }
+
+        // 十の位
+        if (borrowedHundred && !borrowedTen) {
+          createCell(3, 2, `<span class="borrowed-10">10</span>`);
+          createCell(3, 3, `<span class="main-num">${a_t}</span>`);
+        } else if (borrowedTen) {
+          if (borrowedHundred) {
+            createCell(3, 2, `<span class="cancelled-num" style="font-size:1.1rem;">10</span>`);
+            createCell(3, 1, `<span class="rem-num">9</span>`);
+          } else {
+            createCell(3, 3, `<span class="cancelled-num">${a_t}</span>`);
+            createCell(3, 1, `<span class="rem-num">${a_t - 1}</span>`);
+          }
+        } else {
+          createCell(3, 3, `<span class="main-num">${a_t}</span>`);
+        }
+
+        // 一の位
+        if (borrowedTen) {
+          createCell(4, 2, `<span class="borrowed-10">10</span>`);
+        }
+        createCell(4, 3, `<span class="main-num">${a_o}</span>`);
+
+        createCell(1, 4, `<span class="op-sign">−</span>`);
+        createCell(2, 4, `<span class="main-num">${b_h}</span>`);
+        createCell(3, 4, `<span class="main-num">${b_t}</span>`);
+        createCell(4, 4, `<span class="main-num">${b_o}</span>`);
+
+        const line = document.createElement('div');
+        line.className = 'calc-line';
+        line.style.gridRow = '5';
+        grid.appendChild(line);
+
+        // リアルタイム答え表示（位ごとに確定した時点で即時記入）
+        const ans = a - b;
+        const ans_h = Math.floor(ans / 100) || '';
+        const ans_t = Math.floor((ans % 100) / 10);
+        const ans_o = ans % 10;
+
+        const isOneDone = state.right[1] >= targetCoins[1];
+        const isTenDone = isOneDone && (state.right[10] >= targetCoins[10]);
+        const isHundredDone = isTenDone && (state.right[100] >= targetCoins[100]);
+
+        if (isHundredDone) {
+          createCell(2, 6, `<span class="ans-box">${ans_h}</span>`);
+        } else {
+          createCell(2, 6, `<span class="ans-box empty"></span>`);
+        }
+
+        if (isTenDone) {
+          createCell(3, 6, `<span class="ans-box">${ans_h === '' && ans_t === 0 ? '' : ans_t}</span>`);
+        } else {
+          createCell(3, 6, `<span class="ans-box empty"></span>`);
+        }
+
+        if (isOneDone) {
+          createCell(4, 6, `<span class="ans-box">${ans_o}</span>`);
+        } else {
+          createCell(4, 6, `<span class="ans-box empty"></span>`);
+        }
+
+      } else {
+        const { carryToTen, carryToHundred } = state.hissanState;
+
+        if (carryToHundred) {
+          createCell(2, 2, `<span class="memo-carried">1</span>`);
+        }
+        if (carryToTen) {
+          createCell(3, 2, `<span class="memo-carried">1</span>`);
+        }
+
+        createCell(2, 3, `<span class="main-num">${a_h}</span>`);
+        createCell(3, 3, `<span class="main-num">${a_t}</span>`);
+        createCell(4, 3, `<span class="main-num">${a_o}</span>`);
+
+        createCell(1, 4, `<span class="op-sign">＋</span>`);
+        createCell(2, 4, `<span class="main-num">${b_h}</span>`);
+        createCell(3, 4, `<span class="main-num">${b_t}</span>`);
+        createCell(4, 4, `<span class="main-num">${b_o}</span>`);
+
+        const line = document.createElement('div');
+        line.className = 'calc-line';
+        line.style.gridRow = '5';
+        grid.appendChild(line);
+
+        const ans = a + b;
+        const ans_th = Math.floor(ans / 1000) || '';
+        const ans_h = Math.floor((ans % 1000) / 100) || '';
+        const ans_t = Math.floor((ans % 100) / 10);
+        const ans_o = ans % 10;
+
+        const isOneDone = state.right[1] === 0 && state.left[1] < 10;
+        const isTenDone = isOneDone && state.right[10] === 0 && state.left[10] < 10;
+        const isHundredDone = isTenDone && state.right[100] === 0;
+
+        if (isHundredDone && ans_th) {
+          createCell(1, 6, `<span class="ans-box">${ans_th}</span>`);
+        }
+        if (isHundredDone) {
+          createCell(2, 6, `<span class="ans-box">${ans_h}</span>`);
+        } else {
+          createCell(2, 6, `<span class="ans-box empty"></span>`);
+        }
+
+        if (isTenDone) {
+          createCell(3, 6, `<span class="ans-box">${ans_t}</span>`);
+        } else {
+          createCell(3, 6, `<span class="ans-box empty"></span>`);
+        }
+
+        if (isOneDone) {
+          createCell(4, 6, `<span class="ans-box">${ans_o}</span>`);
+        } else {
+          createCell(4, 6, `<span class="ans-box empty"></span>`);
+        }
+      }
+    }
+
+    function initEventListeners() {
+      document.getElementById('btnSet').addEventListener('click', () => {
+        const a = parseInt(document.getElementById('numA').value, 10) || 0;
+        const b = parseInt(document.getElementById('numB').value, 10) || 0;
+        const mode = document.getElementById('calcMode').value;
+        if (mode === 'sub' && a < b) {
+          alert('小学校2年生のひき算では、はじめの数を大きくしてくださいね。');
+          return;
+        }
+        setupProblem(a, mode, b);
+      });
+
+      document.getElementById('calcMode').addEventListener('change', (e) => {
+        document.getElementById('numBLabel').innerText = e.target.value === 'sub' ? 'ひく数' : 'たす数';
+      });
+
+      document.getElementById('btnSoundToggle').addEventListener('click', () => {
+        isSoundOn = !isSoundOn;
+        const btn = document.getElementById('btnSoundToggle');
+        if (isSoundOn) {
+          btn.innerText = '🔊 おと: ON';
+          btn.classList.remove('sound-off');
+          playBeep('coin');
+        } else {
+          btn.innerText = '🔇 おと: OFF';
+          btn.classList.add('sound-off');
+        }
+      });
+
+      document.getElementById('btnBreak100').addEventListener('click', () => breakMoney(100));
+      document.getElementById('btnBreak10').addEventListener('click', () => breakMoney(10));
+      document.getElementById('btnBundle1').addEventListener('click', () => bundleMoney(1));
+      document.getElementById('btnBundle10').addEventListener('click', () => bundleMoney(10));
+      document.getElementById('btnUndo').addEventListener('click', undo);
+    }
+
+    function closeModal() {
+      document.getElementById('finishModal').style.display = 'none';
+      setupProblem(state.numA, state.mode, state.numB);
+    }
+  </script>
+</body>
+</html>
+
